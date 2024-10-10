@@ -21,7 +21,7 @@ event_ids = {}
 event_id_counter = 1
 subscribed_users = set()  # Список пользователей, которые взаимодействовали с ботом
 MAX_PARTICIPANTS = 18  # Лимит на количество участников тренировки
-TOKEN = secrets.get('BOT_API_TOKEN')
+TOKEN = secrets.get('BOT_API_TOKE')
 send_time = time(17, 0, tzinfo=timezone)
 
 # Функция для создания события на конкретную дату
