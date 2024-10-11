@@ -1,4 +1,3 @@
-from telebot.asyncio_helper import send_message
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes, MessageHandler, filters
 from datetime import datetime, timedelta, time
@@ -9,7 +8,7 @@ from secure import secrets
 
 # Устанавливаем локаль на русский язык для вывода даты
 locale.setlocale(locale.LC_TIME, 'C') # Локали
-timezone = pytz.timezone('Europe/Yekaterinburg')
+timezone = pytz.timezone('Europe/Moscow')
 
 # Логирование
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s', level=logging.INFO)
@@ -21,7 +20,7 @@ event_ids = {}
 event_id_counter = 1
 subscribed_users = set()  # Список пользователей, которые взаимодействовали с ботом
 MAX_PARTICIPANTS = 18  # Лимит на количество участников тренировки
-TOKEN = secrets.get('BOT_API_TOKE')
+TOKEN = secrets.get('BOT_API_TOKEN')
 send_time = time(17, 0, tzinfo=timezone)
 
 # Функция для создания события на конкретную дату
@@ -38,22 +37,22 @@ def create_event_on_date(target_date):
     return event_id, event_name
 
 # Функция для удаления старых событий и очистки списка спортсменов
-async def remove_past_events(context: ContextTypes.DEFAULT_TYPE):
-    current_date = datetime.now().date()
-    events_to_remove = []
-
-    for event_id, event_name in event_ids.items():
-        # Извлекаем дату события из имени события
-        event_date_str = event_name.split()[3:5]  # Получаем дату как строку из имени события
-        event_date = datetime.strptime(" ".join(event_date_str), '%d %B').date()
-
-        if event_date < current_date:  # Если дата события уже прошла
-            events_to_remove.append(event_id)
-
-    for event_id in events_to_remove:
-        logger.info(f"Удаление события {event_ids[event_id]} с ID: {event_id}")
-        del event_participants[event_id]  # Удаляем участников события
-        del event_ids[event_id]  # Удаляем само событие
+# async def remove_past_events(context: ContextTypes.DEFAULT_TYPE):
+#     current_date = datetime.now().date()
+#     events_to_remove = []
+#
+#     for event_id, event_name in event_ids.items():
+#         # Извлекаем дату события из имени события
+#         event_date_str = event_name.split()[3:5]  # Получаем дату как строку из имени события
+#         event_date = datetime.strptime(" ".join(event_date_str), '%d %B').date()
+#
+#         if event_date < current_date:  # Если дата события уже прошла
+#             events_to_remove.append(event_id)
+#
+#     for event_id in events_to_remove:
+#         logger.info(f"Удаление события {event_ids[event_id]} с ID: {event_id}")
+#         del event_participants[event_id]  # Удаляем участников события
+#         del event_ids[event_id]  # Удаляем само событие
 
 # Функция для определения ближайшего тренировочного дня
 def get_next_training_day():
@@ -330,7 +329,7 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.TEXT, handle_message))
     application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'^(да|нет)$'), handle_leave_confirmation))
-    application.job_queue.run_daily(remove_past_events, time(hour=0, minute=1))
+    # application.job_queue.run_daily(remove_past_events, time(hour=0, minute=1))
 
     # При запуске создаём событие на ближайший день
     application.job_queue.run_once(create_initial_event, 0)
