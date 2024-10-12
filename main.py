@@ -7,7 +7,7 @@ import pytz
 from secure import secrets
 
 # Устанавливаем локаль на русский язык для вывода даты
-locale.setlocale(locale.LC_ALL, ('ru_RU', 'UTF-8')) # Локали
+locale.setlocale(locale.LC_ALL) # Локали
 timezone = pytz.timezone('Asia/Yekaterinburg')
 
 # Логирование
