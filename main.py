@@ -7,8 +7,8 @@ import pytz
 from secure import secrets
 
 # Устанавливаем локаль на русский язык для вывода даты
-locale.setlocale(locale.LC_TIME, 'C') # Локали
-timezone = pytz.timezone('Europe/Moscow')
+locale.setlocale(locale.LC_ALL, ('ru_RU', 'UTF-8')) # Локали
+timezone = pytz.timezone('Asia/Yekaterinburg')
 
 # Логирование
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s', level=logging.INFO)
@@ -329,7 +329,7 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.TEXT, handle_message))
     application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'^(да|нет)$'), handle_leave_confirmation))
-    # application.job_queue.run_daily(remove_past_events, time(hour=0, minute=1))
+    application.job_queue.run_daily(remove_past_events, time(hour=0, minute=1))
 
     # При запуске создаём событие на ближайший день
     application.job_queue.run_once(create_initial_event, 0)
